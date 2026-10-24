@@ -1,5 +1,8 @@
 {
-    "cSpell.words": [
-        "maxlength"
-    ]
+  "cSpell.words": ["maxlength"],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }
