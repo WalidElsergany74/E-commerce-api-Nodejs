@@ -7,7 +7,8 @@ const AppError = require('../utils/appError');
 // @route POST /api/v1/categories/:categoryId/subcategories
 // @access private
 exports.setBodyCategoryToReqBody = (req, res, next) => {
-  if (!req.body.category) {
+  req.body = req.body || {};
+  if (!req.body.category && req.params.categoryId) {
     req.body.category = req.params.categoryId;
   }
   next();
@@ -51,10 +52,10 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
   const limit = req.limit * 1 || 5;
   const skip = (page - 1) * limit;
   const subcategories = await SubCategory.find(req.filterObject)
-
     .skip(skip)
     .limit(limit)
     .populate({ path: 'category', select: 'name' });
+    
   const total = await SubCategory.countDocuments();
   res.status(200).json({
     status: 'success',
