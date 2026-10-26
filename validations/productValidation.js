@@ -1,6 +1,5 @@
 const { param, check } = require('express-validator');
 const validationMiddleware = require('../middlewares/validationMiddleware');
-const AppError = require('../utils/appError');
 const CategoryModel = require('../models/categoryModel');
 const SubCategoryModel = require('../models/subCategoryModel');
 

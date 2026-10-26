@@ -55,7 +55,7 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate({ path: 'category', select: 'name' });
-    
+
   const total = await SubCategory.countDocuments();
   res.status(200).json({
     status: 'success',

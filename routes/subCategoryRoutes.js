@@ -23,7 +23,11 @@ router
 router
   .route('/:id')
   .get(subCategoryController.getSingleSubCategories)
-  .put(subCategoryController.setBodyCategoryToReqBody,updateSubCategoryValidation, subCategoryController.updateCategory)
+  .put(
+    subCategoryController.setBodyCategoryToReqBody,
+    updateSubCategoryValidation,
+    subCategoryController.updateCategory
+  )
   .delete(deleteSubCategoryValidation, subCategoryController.deleteCategory);
 
 module.exports = router;
