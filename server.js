@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
-app.use('/api/v1/subcategorires', subcategoryRoute);
+app.use('/api/v1/subcategories', subcategoryRoute);
 app.use('/api/v1/brands', brandRoute);
 app.use('/api/v1/products', productRoute);
 

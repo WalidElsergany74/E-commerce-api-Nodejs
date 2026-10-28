@@ -1,4 +1,5 @@
-const { param, check } = require('express-validator');
+const { param, check, body } = require('express-validator');
+const slugify = require('slugify');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 
 exports.getBrandValidation = [
@@ -13,7 +14,15 @@ exports.createBrandValidation = [
     .isLength({ min: 3 })
     .withMessage('Brand name is too short')
     .isLength({ max: 32 })
-    .withMessage('Brand name is too long'),
+    .withMessage('Brand name is too long')
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  check('image')
+    .optional()
+    .isString()
+    .withMessage('Brand image must be a string'),
   validationMiddleware
 ];
 
@@ -26,6 +35,14 @@ exports.updateBrandValidation = [
     .withMessage('Brand name is too short')
     .isLength({ max: 32 })
     .withMessage('Brand name is too long'),
+  body('name').custom((val, { req }) => {
+    req.body.slug = slugify(val);
+    return true;
+  }),
+  check('image')
+    .optional()
+    .isString()
+    .withMessage('Brand image must be a string'),
   validationMiddleware
 ];
 

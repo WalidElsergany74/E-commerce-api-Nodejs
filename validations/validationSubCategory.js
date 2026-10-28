@@ -1,4 +1,5 @@
-const { param, check } = require('express-validator');
+const { param, check, body } = require('express-validator');
+const slugify = require('slugify');
 const validationMiddleware = require('../middlewares/validationMiddleware');
 
 exports.getSubCategoryValidation = [
@@ -14,6 +15,10 @@ exports.createSubCategoryValidation = [
     .withMessage('SubCategory name is too short')
     .isLength({ max: 32 })
     .withMessage('SubCategory name is too long'),
+  body('name').custom((val, { req }) => {
+    req.body.slug = slugify(val);
+    return true;
+  }),
 
   check('category')
     .notEmpty()
@@ -31,7 +36,12 @@ exports.updateSubCategoryValidation = [
     .isLength({ min: 2 })
     .withMessage('SubCategory name is too short')
     .isLength({ max: 32 })
-    .withMessage('SubCategory name is too long'),
+    .withMessage('SubCategory name is too long')
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+
   check('category')
     .notEmpty()
     .withMessage('Subcategory must be belongs category')

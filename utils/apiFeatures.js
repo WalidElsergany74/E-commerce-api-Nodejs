@@ -1,6 +1,6 @@
 class APIFeatures {
   constructor(mongooseQuery, queryString) {
-    this.mongooseQuery = mongooseQuery;
+    this.mongooseQuery = mongooseQuery.select('-__v');
     this.queryString = queryString;
   }
 
@@ -17,11 +17,25 @@ class APIFeatures {
   }
 
   // Pagination
-  pagination() {
+  pagination(countDocuments) {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 5;
     const skip = (page - 1) * limit;
+
+    // pagination result
+    const pagination = {};
+    pagination.page = page;
+    pagination.per_page = limit;
+    pagination.totalPages = Math.ceil(countDocuments / limit);
+    if (page < pagination.totalPages) {
+      pagination.nextPage = page + 1;
+    }
+    if (page > 1) {
+      pagination.previousPage = page - 1;
+    }
+
     this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
+    this.pagination = pagination;
     return this;
   }
 
@@ -44,15 +58,20 @@ class APIFeatures {
   }
 
   // Searching by title and description
-  search() {
+  search(modelName) {
     const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     if (this.queryString.keyword) {
       const query = {};
       const keyword = escapeRegex(this.queryString.keyword);
-      query.$or = [
-        { title: { $regex: keyword, $options: 'i' } },
-        { description: { $regex: keyword, $options: 'i' } }
-      ];
+      if (modelName === 'Products') {
+        query.$or = [
+          { title: { $regex: keyword, $options: 'i' } },
+          { description: { $regex: keyword, $options: 'i' } }
+        ];
+      } else {
+        query.$or = [{ title: { $regex: keyword, $options: 'i' } }];
+      }
+
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     return this;
